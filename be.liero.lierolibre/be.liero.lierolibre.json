@@ -1,0 +1,127 @@
+{
+    "app-id" : "be.liero.lierolibre",
+    "runtime" : "org.freedesktop.Platform",
+    "runtime-version" : "21.08",
+    "sdk" : "org.freedesktop.Sdk",
+    "command" : "lierolibre",
+    "finish-args" : [
+	"--socket=fallback-x11",
+	"--socket=wayland",
+        "--device=dri",
+        "--share=ipc",
+        "--share=pulseaudio"
+    ],
+    "cleanup" : [
+        "*.la",
+        "*.a",
+        "/lib/cmake",
+        "/include",
+        "/lib/pkgconfig"
+    ],
+    "modules" : [
+        "shared-modules/glu/glu-9.json",
+        "shared-modules/SDL/sdl12-compat.json",
+        "shared-modules/SDL/SDL_mixer-1.2.12.json",
+        {
+            "name": "imagemagick",
+            "config-opts": [
+                "--enable-static=yes",
+                "--disable-docs",
+                "--with-png",
+                "--with-jpeg",
+                "--with-zlib"
+            ],
+            "cleanup": [
+                "*"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://download.imagemagick.org/ImageMagick/download/ImageMagick-7.1.0-35.tar.xz",
+                    "sha256": "26063653de155bab820894e5216a38577420c4dfd59e784daca6601e37f294e0"
+                }
+            ]
+        },
+        {
+            "name": "sox",
+            "config-opts": [
+                "--disable-static"
+            ],
+            "cleanup": [
+                "/bin"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://downloads.sourceforge.net/project/sox/sox/14.4.2/sox-14.4.2.tar.bz2",
+                    "sha256": "81a6956d4330e75b5827316e44ae381e6f1e8928003c6aa45896da9041ea149c"
+                }
+            ]
+        },
+        {
+            "name": "libconfig",
+            "config-opts": [
+                "--disable-static",
+                "--enable-shared"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://hyperrealm.github.io/libconfig/dist/libconfig-1.7.2.tar.gz",
+                    "sha256": "7c3c7a9c73ff3302084386e96f903eb62ce06953bb1666235fac74363a16fad9"
+                }
+            ]
+        },
+        {
+            "name": "boost",
+            "buildsystem": "simple",
+            "build-commands": [
+                "./bootstrap.sh --prefix=/app --with-libraries=program_options",
+                "./b2 headers",
+                "./b2 -j$FLATPAK_BUILDER_N_JOBS install variant=release cxxstd=17 --layout=system"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://boostorg.jfrog.io/artifactory/main/release/1.77.0/source/boost_1_77_0.tar.bz2",
+                    "sha256": "fc9f85fc030e233142908241af7a846e60630aa7388de9a5fafb1f3a26840854"
+                }
+            ]
+        },
+        {
+            "name": "lierolibre",
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://gitlab.com/lierolibre/lierolibre.git",
+                    "commit": "ae584b245fedac3cb7030d8b9591f36632b0f29b",
+                    "disable-submodules": true
+                },
+                {
+                    "type": "shell",
+                    "commands": [
+                        "sed -i s/usr/app/g autogen.sh"
+                    ]
+                },
+                {
+                    "type": "git",
+                    "url": "https://gitlab.com/lierolibre/lierolibre-data.git",
+                    "commit": "141b495caf7c18d0f92950fdb2df4544dc606b03",
+                    "dest": "data"
+                },
+                {
+                    "type": "git",
+                    "url": "https://gitlab.com/lierolibre/lierolibre-w32depends.git",
+                    "commit": "00e16c97a58109a251a82d60dde2e8d09ea64e91",
+                    "dest": "windows"
+                },
+                {
+                    "type": "git",
+                    "url": "https://gitlab.com/lierolibre/gvl.git",
+                    "commit": "a9592533eeabed075b13d11c64f63f503dc13343",
+                    "dest": "src/gvl"
+                }
+            ]
+        }
+    ]
+}
