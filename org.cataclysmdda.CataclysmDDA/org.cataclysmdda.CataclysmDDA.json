@@ -1,0 +1,33 @@
+{
+    "app-id" : "org.cataclysmdda.CataclysmDDA",
+    "runtime" : "org.freedesktop.Platform",
+    "runtime-version" : "21.08",
+    "sdk" : "org.freedesktop.Sdk",
+    "command" : "cataclysm-tiles",
+    "finish-args" : [
+	"--socket=fallback-x11",
+	"--socket=wayland",
+        "--device=dri",
+        "--share=ipc",
+        "--socket=pulseaudio"
+    ],
+    "modules" : [
+        {
+            "name": "cataclysm-dda",
+            "buildsystem": "simple",
+            "build-commands": [
+                "make -j $FLATPAK_BUILDER_N_JOBS PREFIX=/app RELEASE=1 USE_XDG_DIR=1 LANGUAGE=all RUNTESTS=0 LINTJSON=0 ASTYLE=0 PCH=0",
+                "make -j $FLATPAK_BUILDER_N_JOBS PREFIX=/app RELEASE=1 USE_XDG_DIR=1 LANGUAGE=all RUNTESTS=0 LINTJSON=0 ASTYLE=0 PCH=0 TILES=1 SOUND=1",
+                "make PREFIX=/app RELEASE=1 ZLEVELS=1 USE_XDG_DIR=1 PCH=0 install",
+                "make PREFIX=/app RELEASE=1 ZLEVELS=1 USE_XDG_DIR=1 PCH=0 TILES=1 SOUND=1 install"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/CleverRaven/Cataclysm-DDA/archive/0.F-3.tar.gz",
+                    "sha256": "5cde334df76f80723532896a995304fd789cc7207172dd817960ffdbb46d87a4"
+                }
+            ]
+        }
+    ]
+}
